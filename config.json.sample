@@ -3,5 +3,8 @@
   "cmd": "C:\\fivem\\data\\server1.bat",
   "restartFlag": "C:\\fivem\\data\\server1.restart",
   "logPath": "C:\\fivem\\data\\logs",
-  "logPrefix": "server1"
+  "logPrefix": "server1",
+  "hostname": "",
+  "port": 30120,
+  "password": ""
 }
