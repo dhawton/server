@@ -1,7 +1,7 @@
 const config = require("./config.json");
 const { spawn } = require("child_process");
 const fs = require("fs");
-const rcon = require("rcon");
+const rcon = require("./rcon");
 
 let fx = null;
 let fd = null;
