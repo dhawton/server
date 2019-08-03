@@ -13,23 +13,23 @@ let wasKilled = false;
 let hasNotifiedRestart = false;
 let isStarting = false;
 
-const print = (msg) => {
+const print = msg => {
   let d = new Date();
   let prefix =
-      d.getFullYear() +
-      "-" +
-      (d.getMonth() < 10 ? "0" : "") +
-      d.getMonth() +
-      "-" +
-      (d.getDate() < 10 ? "0" : "") +
-	    d.getDate() + 
-      " " +
-      (d.getHours() < 10 ? "0" : "") +
-      d.getHours() +
-      (d.getMinutes() < 10 ? "0" : "") +
-      d.getMinutes();
+    d.getFullYear() +
+    "-" +
+    (d.getMonth() < 10 ? "0" : "") +
+    d.getMonth() +
+    "-" +
+    (d.getDate() < 10 ? "0" : "") +
+    d.getDate() +
+    " " +
+    (d.getHours() < 10 ? "0" : "") +
+    d.getHours() +
+    (d.getMinutes() < 10 ? "0" : "") +
+    d.getMinutes();
   console.log(`[${prefix}] ${msg}`);
-}
+};
 
 console.log("MASTER CONTROL PROGRAM by Daniel A. Hawton");
 console.log(`Starting control processing for ${config.server}`);
@@ -41,16 +41,17 @@ const mainLoop = () => {
     startFx();
     firstStart = false;
   } else if (fx == null && !isStarting) {
-	print(`Server appears down and not being started...`);
-	startFx();
+    print(`Server appears down and not being started...`);
+    startFx();
   } else if (fs.existsSync(`${config.restartFlag}`)) {
     print("Restart flag found, restarting server.");
     fs.unlinkSync(`${config.restartFlag}`);
+    stopFx();
     startFx();
   } else {
     const d = new Date();
     if (d.getHours() === 4 && d.getMinutes() > 56 && dailyRestart < 4) {
-      if (!hasNotifiedRestart) { 
+      if (!hasNotifiedRestart) {
         print(`Starting checks for automatic restart at 0500`);
         hasNotifiedRestart = true;
       }
@@ -104,37 +105,36 @@ const resetLogs = () => {
       d.getMonth() +
       "-" +
       (d.getDate() < 10 ? "0" : "") +
-	  d.getDate() + 
+      d.getDate() +
       " " +
       (d.getHours() < 10 ? "0" : "") +
       d.getHours() +
       (d.getMinutes() < 10 ? "0" : "") +
       d.getMinutes() +
-	  (d.getSeconds() < 10 ? "0" : "") +
-	  d.getSeconds();
-	try {
-	  fs.renameSync(
+      (d.getSeconds() < 10 ? "0" : "") +
+      d.getSeconds();
+    try {
+      fs.renameSync(
         `${config.logPath}\\${config.logPrefix}.log`,
         `${config.logPath}\\${config.logPrefix}-${fn}.log`
       );
-	} catch(err) {
-	  print(err);
-	}
+    } catch (err) {
+      print(err);
+    }
   }
 };
 
 const stopFx = () => {
-	if (fx !== null && !isStarting) {
-		if (fd !== null) fd.end();
-		
-		fx.kill("SIGKILL");
-		wasKilled = true;
-		resetLogs();
-		fx = null;
-		isStarting = false;
-	}
-}
-		
+  if (fx !== null && !isStarting) {
+    if (fd !== null) fd.end();
+
+    fx.kill("SIGKILL");
+    wasKilled = true;
+    resetLogs();
+    fx = null;
+    isStarting = false;
+  }
+};
 
 const startFx = () => {
   print("Starting git repo sync process.");
@@ -151,10 +151,10 @@ const startFx = () => {
   fx.stdout.pipe(fd);
   fx.stderr.pipe(fd);
   fx.on("exit", (code, signal) => {
-	print("Exited with " + code + " signal " + signal);
-	print(" ");
+    print("Exited with " + code + " signal " + signal);
+    print(" ");
 
-	setTimeout(startFx, 5000);
+    setTimeout(startFx, 5000);
   });
   isStarting = false;
 };
